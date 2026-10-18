@@ -40,6 +40,17 @@ void initialize_d1_led() {
     reg(GPIOD_ODR) &= ~DEV_E_BOX_D1_MASK;
 }
 
+// Drive a GPIOD pin high or low without exposing register operations to the caller.
+// Used by main() to turn DevEBox D1 on and off using its pin number.
+void set_gpiod_pin(uint32_t pin, bool high) {
+    const uint32_t pin_mask = 1U << pin;
+    if (high) {
+        reg(GPIOD_ODR) |= pin_mask;
+    } else {
+        reg(GPIOD_ODR) &= ~pin_mask;
+    }
+}
+
 // Start SysTick with the processor clock so it raises COUNTFLAG about once per millisecond.
 // Called once at startup; delay_ms() uses this timer to pace the LED heartbeat.
 void initialize_systick() {
@@ -77,7 +88,9 @@ int main() {
 
     while (true) {
         rotate_values();
+        set_gpiod_pin(DEV_E_BOX_D1_PIN, true);
         delay_ms(500U);
-        reg(GPIOD_ODR) ^= DEV_E_BOX_D1_MASK;
+        set_gpiod_pin(DEV_E_BOX_D1_PIN, false);
+        delay_ms(500U);
     }
 }
