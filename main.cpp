@@ -16,9 +16,9 @@ constexpr uintptr_t SYSTICK_CTRL = 0xE000E010U;
 constexpr uintptr_t SYSTICK_LOAD = 0xE000E014U;
 constexpr uintptr_t SYSTICK_VAL = 0xE000E018U;
 
-// On the STM32F407G-DISC1, PD12 drives the green user LED LD4.
-constexpr uint32_t GREEN_LED_PIN = 12U;
-constexpr uint32_t GREEN_LED_MASK = 1U << GREEN_LED_PIN;
+// For this DevEBox STM32F407VET6 board, the user identifies onboard LED D1 as PD15.
+constexpr uint32_t DEV_E_BOX_D1_PIN = 15U;
+constexpr uint32_t DEV_E_BOX_D1_MASK = 1U << DEV_E_BOX_D1_PIN;
 // At the reset-default 16 MHz processor clock, 16000 ticks are approximately 1 ms.
 constexpr uint32_t SYSTICK_RELOAD_1MS = 16000U - 1U;
 constexpr uint32_t SYSTICK_COUNTFLAG = 1U << 16U;
@@ -29,15 +29,15 @@ inline volatile uint32_t& reg(uintptr_t address) {
     return *reinterpret_cast<volatile uint32_t*>(address);
 }
 
-// Enable GPIOD and configure PD12 as an output for green LED LD4.
-// Called once at startup before the program changes the LED state.
-void initialize_green_led() {
+// Enable GPIOD and configure PD15 as an output for DevEBox LED D1.
+// Called once at startup before the program changes D1's state.
+void initialize_d1_led() {
     reg(RCC_AHB1ENR) |= 1U << 3U;
 
-    constexpr uint32_t mode_shift = GREEN_LED_PIN * 2U;
+    constexpr uint32_t mode_shift = DEV_E_BOX_D1_PIN * 2U;
     reg(GPIOD_MODER) =
         (reg(GPIOD_MODER) & ~(3U << mode_shift)) | (1U << mode_shift);
-    reg(GPIOD_ODR) &= ~GREEN_LED_MASK;
+    reg(GPIOD_ODR) &= ~DEV_E_BOX_D1_MASK;
 }
 
 // Start SysTick with the processor clock so it raises COUNTFLAG about once per millisecond.
@@ -70,14 +70,14 @@ void rotate_values() {
 }
 
 // Firmware entry point called by Reset_Handler after startup initialization.
-// Sets up the green Discovery LED, then rotates the watch values and blinks the LED repeatedly.
+// Sets up DevEBox LED D1 on PD15, then rotates the watch values and blinks D1 repeatedly.
 int main() {
-    initialize_green_led();
+    initialize_d1_led();
     initialize_systick();
 
     while (true) {
         rotate_values();
         delay_ms(500U);
-        reg(GPIOD_ODR) ^= GREEN_LED_MASK;
+        reg(GPIOD_ODR) ^= DEV_E_BOX_D1_MASK;
     }
 }
