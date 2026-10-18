@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Renode: Green LED and Rotate Values",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "external",
+      "gdbTarget": "localhost:3333",
+      "executable": "${workspaceFolder}/main.elf",
+      "cwd": "${workspaceFolder}",
+      "gdbPath": "C:/Program Files/Arm/GNU Toolchain mingw-w64-x86_64-arm-none-eabi/bin/arm-none-eabi-gdb.exe",
+      "preLaunchTask": "Start Renode GDB Server",
+      "runToEntryPoint": "main",
+      "overrideResetCommands": ["monitor reset halt"]
+    }
+  ]
+}

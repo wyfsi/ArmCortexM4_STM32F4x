@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Discovery LED and Rotate Values",
+      "type": "shell",
+      "command": "arm-none-eabi-g++",
+      "args": [
+        "-g",
+        "-O0",
+        "-mcpu=cortex-m4",
+        "-mthumb",
+        "-mfloat-abi=hard",
+        "-mfpu=fpv4-sp-d16",
+        "-fno-exceptions",
+        "-fno-rtti",
+        "--specs=nano.specs",
+        "--specs=nosys.specs",
+        "-T",
+        "${workspaceFolder}/stm32f407vg.ld",
+        "${workspaceFolder}/main.cpp",
+        "${workspaceFolder}/startup.cpp",
+        "-o",
+        "${workspaceFolder}/main.elf"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Start Renode GDB Server",
+      "type": "shell",
+      "command": "powershell.exe",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/start_renode.ps1"
+      ],
+      "dependsOn": "Build Discovery LED and Rotate Values",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*Waiting for Renode GDB stub on localhost:3333.*",
+          "endsPattern": ".*Renode GDB server is live.*"
+        }
+      }
+    }
+  ]
+}

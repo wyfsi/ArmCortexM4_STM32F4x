@@ -1,0 +1,11 @@
+using sysbus
+
+# Create machine based on Renode's built-in STM32F4 Discovery board definition
+mach create "stm32f4_discovery"
+machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
+
+# Load ELF binary into memory
+sysbus LoadELF @main.elf
+
+# Start GDB server on port 3333
+machine StartGdbServer 3333
