@@ -11,8 +11,7 @@
       "cwd": "${workspaceFolder}",
       "gdbPath": "C:/Program Files/Arm/GNU Toolchain mingw-w64-x86_64-arm-none-eabi/bin/arm-none-eabi-gdb.exe",
       "preLaunchTask": "Start Renode GDB Server",
-      "runToEntryPoint": "main",
-      "overrideResetCommands": ["monitor reset halt"]
+      "runToEntryPoint": "main"
     }
   ]
 }
