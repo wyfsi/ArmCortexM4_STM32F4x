@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build Discovery LED and Rotate Values",
+      "label": "Build STM32F4 Discovery Simulation",
       "type": "shell",
       "command": "arm-none-eabi-g++",
       "args": [
@@ -45,7 +45,7 @@
         "-File",
         "${workspaceFolder}/start_renode.ps1"
       ],
-      "dependsOn": "Build Discovery LED and Rotate Values",
+      "dependsOn": "Build STM32F4 Discovery Simulation",
       "isBackground": true,
       "problemMatcher": {
         "pattern": {

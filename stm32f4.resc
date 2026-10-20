@@ -1,11 +1,12 @@
 using sysbus
 
-# Create machine based on Renode's built-in STM32F4 Discovery board definition
+# Create a simulated machine based on Renode's STM32F4 Discovery board definition.
+# This does not connect to or flash a physical DevEBox board.
 mach create "stm32f4_discovery"
 machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
 
-# Load ELF binary into memory
+# Load the firmware into the simulated machine's memory.
 sysbus LoadELF @main.elf
 
-# Start GDB server on port 3333
+# Expose the simulated Cortex-M target to Cortex-Debug on localhost:3333.
 machine StartGdbServer 3333
