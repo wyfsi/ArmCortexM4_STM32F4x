@@ -6,6 +6,8 @@ extern "C" {
     extern uint32_t _sdata, _edata, _sidata;
     extern uint32_t _sbss, _ebss;
 
+    void __libc_init_array();
+
     int _close(int file) { return -1; }
     int _lseek(int file, int ptr, int dir) { return 0; }
     int _read(int file, char *ptr, int len) { return 0; }
@@ -26,6 +28,8 @@ extern "C" {
         while (pDest < &_ebss) {
             *pDest++ = 0;
         }
+
+        __libc_init_array();
 
         // Call main
         main();

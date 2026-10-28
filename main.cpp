@@ -75,6 +75,7 @@ void rotate_values() {
 // Firmware entry point called by Reset_Handler after startup initialization.
 // Turns all four Discovery LEDs on after a second startup delay, then keeps them on.
 int main() {
+    rotate_values();
     initialize_discovery_leds();
     initialize_systick();
 
@@ -82,9 +83,25 @@ int main() {
     reg(GPIOD_ODR) |= DISCOVERY_LED_MASK;
 
     while (true) {
-        rotate_values();
         delay_ms(500U);
         // Toggle the four Discovery LEDs on and off to create a heartbeat.
         reg(GPIOD_ODR) ^= DISCOVERY_LED_MASK;
     }
+
+    // alternative way to manually toggle the LEDs on and off without using the XOR operator:
+    // while (true) {
+    //     reg(GPIOD_ODR) |= DISCOVERY_LED_MASK;
+    //     delay_ms(500U);
+    //     reg(GPIOD_ODR) &= ~DISCOVERY_LED_MASK;
+    //     delay_ms(500U);
+    // }
+
+    // alternative way to manually toggle the LEDs with a button press without using the XOR operator:
+    // while (true) {
+    //     if (reg(GPIOA_IDR) & (1U << 0U)) { // if the user button is pressed
+    //         reg(GPIOD_ODR) |= DISCOVERY_LED_MASK;
+    //     } else {
+    //         reg(GPIOD_ODR) &= ~DISCOVERY_LED_MASK;
+    //     }
+    // }
 }

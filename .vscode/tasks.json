@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build STM32F4 Discovery Simulation",
+      "label": "Build STM32F4 Firmware",
       "type": "shell",
       "command": "arm-none-eabi-g++",
       "args": [
@@ -30,6 +30,21 @@
       "problemMatcher": ["$gcc"]
     },
     {
+      "label": "Flash STM32F407 via ST-Link",
+      "type": "shell",
+      "command": "openocd",
+      "args": [
+        "-f",
+        "interface/stlink.cfg",
+        "-f",
+        "target/stm32f4x.cfg",
+        "-c",
+        "program \"${workspaceFolder}/main.elf\" verify reset exit"
+      ],
+      "dependsOn": "Build STM32F4 Firmware",
+      "problemMatcher": ["$gcc"]
+    },
+    {
       "label": "Start Renode GDB Server",
       "type": "shell",
       "command": "powershell.exe",
@@ -45,7 +60,7 @@
         "-File",
         "${workspaceFolder}/start_renode.ps1"
       ],
-      "dependsOn": "Build STM32F4 Discovery Simulation",
+      "dependsOn": "Build STM32F4 Firmware",
       "isBackground": true,
       "problemMatcher": {
         "pattern": {

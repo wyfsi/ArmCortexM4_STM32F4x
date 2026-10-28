@@ -2,14 +2,31 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Renode Simulation: STM32F4 Discovery",
+      "name": "Physical STM32F407 (flash & debug via ST-Link)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/main.elf",
+      "device": "STM32F407VGTx",
+      "serverpath": "openocd",
+      "configFiles": [
+        "interface/stlink.cfg",
+        "target/stm32f4x.cfg"
+      ],
+      "gdbPath": "arm-none-eabi-gdb",
+      "preLaunchTask": "Build STM32F4 Firmware",
+      "runToEntryPoint": "main"
+    },
+    {
+      "name": "Renode Simulation (not physical hardware)",
       "type": "cortex-debug",
       "request": "launch",
       "servertype": "external",
       "gdbTarget": "127.0.0.1:3333",
-      "executable": "${workspaceFolder}/main.elf",
       "cwd": "${workspaceFolder}",
-      "gdbPath": "C:/Program Files/Arm/GNU Toolchain mingw-w64-x86_64-arm-none-eabi/bin/arm-none-eabi-gdb.exe",
+      "executable": "${workspaceFolder}/main.elf",
+      "gdbPath": "arm-none-eabi-gdb",
       "preLaunchTask": "Start Renode GDB Server",
       "runToEntryPoint": "main",
       "overrideResetCommands": ["monitor reset halt"]
