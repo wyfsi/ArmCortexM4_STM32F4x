@@ -25,8 +25,9 @@ must be able to open the debug interface.
 
 1. Open **Run and Debug** in VS Code.
 2. Select **Physical STM32F407 (flash & debug via ST-Link)**.
-3. Press **F5**. VS Code builds `main.elf`, connects using OpenOCD, programs the
-   target, and starts debugging at `main`.
+3. Press **F5**. VS Code runs the **Flash STM32F407 via ST-Link** task first,
+   which builds `main.elf` and asks OpenOCD to program, verify, and reset the
+   target. It then starts the OpenOCD debug session and debugging at `main`.
 
 To flash without starting a debug session, run **Tasks: Run Task** from the
 Command Palette and select **Flash STM32F407 via ST-Link**. This task builds the

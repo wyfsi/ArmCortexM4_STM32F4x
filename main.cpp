@@ -79,11 +79,11 @@ int main() {
     initialize_discovery_leds();
     initialize_systick();
 
-    delay_ms(1000U);
+    delay_ms(100U);
     reg(GPIOD_ODR) |= DISCOVERY_LED_MASK;
 
     while (true) {
-        delay_ms(500U);
+        delay_ms(1000U);
         // Toggle the four Discovery LEDs on and off to create a heartbeat.
         reg(GPIOD_ODR) ^= DISCOVERY_LED_MASK;
     }

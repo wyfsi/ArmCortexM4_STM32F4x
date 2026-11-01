@@ -1,7 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
-    {
+    { // Goal: json to replicate the following command: openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program main.elf verify reset exit"
       "name": "Physical STM32F407 (flash & debug via ST-Link)",
       "type": "cortex-debug",
       "request": "launch",
@@ -15,7 +15,7 @@
         "target/stm32f4x.cfg"
       ],
       "gdbPath": "arm-none-eabi-gdb",
-      "preLaunchTask": "Build STM32F4 Firmware",
+      "preLaunchTask": "Flash STM32F407 via ST-Link",
       "runToEntryPoint": "main"
     },
     {
