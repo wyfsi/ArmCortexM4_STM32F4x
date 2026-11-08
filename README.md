@@ -43,4 +43,6 @@ GPIO pins.
 Select **Renode Simulation (not physical hardware)** in **Run and Debug** and
 press **F5**. The pre-launch task builds the firmware and starts Renode's GDB
 server. This tests the firmware in a simulated STM32F4 Discovery platform; it
-does not flash the physical board.
+does not flash the physical board. The Windows launcher gives Renode an
+isolated temporary directory for each run, so unrelated stale Renode files in
+the system temporary directory cannot interfere with startup.

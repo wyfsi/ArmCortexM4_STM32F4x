@@ -79,7 +79,7 @@ int main() {
     initialize_discovery_leds();
     initialize_systick();
 
-    delay_ms(100U);
+    delay_ms(1000U);
     reg(GPIOD_ODR) |= DISCOVERY_LED_MASK;
 
     while (true) {

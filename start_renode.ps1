@@ -11,36 +11,55 @@ if (-not (Test-Path $renode)) {
     throw "Renode executable was not found. Add Renode to PATH or install it under Program Files."
 }
 
-$process = Start-Process -FilePath $renode `
-    -ArgumentList @("`"$script`"") `
-    -WorkingDirectory $workspace `
-    -PassThru
+$tempDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "RenodeSession-$([guid]::NewGuid().ToString('N'))"
+New-Item -ItemType Directory -Path $tempDirectory | Out-Null
 
-Write-Output "Waiting for Renode GDB stub on localhost:3333..."
-$ready = $false
-for ($attempt = 0; $attempt -lt 100; $attempt++) {
-    if ($process.HasExited) {
-        throw "Renode exited before opening GDB port 3333."
-    }
+$originalTemp = $env:TEMP
+$originalTmp = $env:TMP
+$process = $null
 
-    $client = [System.Net.Sockets.TcpClient]::new()
+try {
     try {
-        $client.Connect("127.0.0.1", 3333)
-        $ready = $true
-        break
-    } catch {
-        Start-Sleep -Milliseconds 100
+        $env:TEMP = $tempDirectory
+        $env:TMP = $tempDirectory
+        $process = Start-Process -FilePath $renode `
+            -ArgumentList @("`"$script`"") `
+            -WorkingDirectory $workspace `
+            -PassThru
     } finally {
-        $client.Dispose()
+        $env:TEMP = $originalTemp
+        $env:TMP = $originalTmp
     }
-}
 
-if (-not $ready) {
-    if (-not $process.HasExited) {
+    Write-Output "Waiting for Renode GDB stub on localhost:3333..."
+    $ready = $false
+    for ($attempt = 0; $attempt -lt 100; $attempt++) {
+        if ($process.HasExited) {
+            throw "Renode exited before opening GDB port 3333."
+        }
+
+        $client = [System.Net.Sockets.TcpClient]::new()
+        try {
+            $client.Connect("127.0.0.1", 3333)
+            $ready = $true
+            break
+        } catch {
+            Start-Sleep -Milliseconds 100
+        } finally {
+            $client.Dispose()
+        }
+    }
+
+    if (-not $ready) {
+        throw "Renode did not open GDB port 3333 within 10 seconds."
+    }
+
+    Write-Output "Renode GDB server is live on localhost:3333!"
+    Wait-Process -Id $process.Id
+} finally {
+    if ($process -and -not $process.HasExited) {
         Stop-Process -Id $process.Id -Force
     }
-    throw "Renode did not open GDB port 3333 within 10 seconds."
-}
 
-Write-Output "Renode GDB server is live on localhost:3333!"
-Wait-Process -Id $process.Id
+    Remove-Item -LiteralPath $tempDirectory -Recurse -Force
+}
